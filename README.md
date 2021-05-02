@@ -1,2 +1,1 @@
-# grub-house
-GrubHouse project using Expo
+# GRUBHOUSE
