@@ -4,7 +4,7 @@
     "owner": "goldstar",
     "slug": "expo.io/@project-goldstar/grub-house",
     "version": "1.0.0",
-    "githubUrl": "https://github.com/asterism0115/grub-house.git"
+    "githubUrl": "https://github.com/asterism0115/grub-house.git",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "grubhouse",
