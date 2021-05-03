@@ -86,19 +86,19 @@ export default class nearbyRestorants extends Component {
         });
       }
       let location = await Location.getCurrentPositionAsync({});
-    this.setState(
-      {
-        orgLocation: {
-          lat: location.coords.latitude,
-          lng: location.coords.longitude
-        },
-        cLocation: {
-          lat: location.coords.latitude,
-          lng: location.coords.longitude,
-        },
-        loading: false,
-        mapLoading: true
-      });
+      this.setState(
+        {
+          orgLocation: {
+            lat: location.coords.latitude,
+            lng: location.coords.longitude
+          },
+          cLocation: {
+            lat: location.coords.latitude,
+            lng: location.coords.longitude,
+          },
+          loading: false,
+          mapLoading: true
+        });
       setTimeout(() => {
         this.setState({
           mapLoading: true
@@ -131,11 +131,12 @@ export default class nearbyRestorants extends Component {
               loading: false,
              
             });
-            setTimeout(() => {
-              this.setState({
-                mapLoading: true
-              })
-            }, 500)
+          setTimeout(() => {
+            this.setState({
+              mapLoading: true
+            })
+          }, 500)
+          console.log("position", position);
         },
         (err) => {
           alert("Location permission is denied");
@@ -144,13 +145,6 @@ export default class nearbyRestorants extends Component {
         GET_LOCATION_OPTIONS,
       );
     }   
-    this.refs.mapView.animateToRegion(
-      {
-        latitude: this.state.orgLocation.lat,
-        longitude: this.state.orgLocation.lng,
-        latitudeDelta: 0.04022,
-        longitudeDelta: 0.00021,
-      }, 2000)
   };
   checkOpen = (merchant_id) => {
     GetOpenTime(merchant_id).then(res=>{
@@ -216,8 +210,8 @@ export default class nearbyRestorants extends Component {
       {
         latitude: this.state.orgLocation.lat,
         longitude: this.state.orgLocation.lng,
-        latitudeDelta: 0.04022,
-        longitudeDelta: 0.00021,
+        latitudeDelta: 0.04022/13,
+        longitudeDelta: 0.00021/13,
       }, 2000)
   }
 
@@ -392,8 +386,8 @@ export default class nearbyRestorants extends Component {
       {
         latitude: this.state.orgLocation.lat,
         longitude: this.state.orgLocation.lng,
-        latitudeDelta: 0.4022,
-        longitudeDelta: 0.0021,
+        latitudeDelta: 0.4022/13,
+        longitudeDelta: 0.0021/13,
       }, 2000)
     setTimeout(() => {
       this.setState({
@@ -660,14 +654,13 @@ export default class nearbyRestorants extends Component {
           <MapView
             ref="mapView"
             showsMyLocationButton
-            minZoomLevel={16}
             style={{ flex: 1, width: global.CONSTANT.WIDTH }}
             provider={PROVIDER_GOOGLE}
             region={{
               latitude: this.state.cLocation.lat,
               longitude: this.state.cLocation.lng,
-              latitudeDelta: 0.3022,
-              longitudeDelta: 0.0021,
+              latitudeDelta: 0.3022/13,
+              longitudeDelta: 0.0021/13,
             }}
           >
             {this.state.nearbyRestList.length > 0 ? this.state.nearbyList.map((rest, index) => (
