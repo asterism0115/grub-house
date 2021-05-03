@@ -2,7 +2,7 @@
   "expo": {
     "name": "grub-house",
     "owner": "goldstar",
-    "slug": "expo.io/@project-goldstar/grub-house",
+    "slug": "grub-house",
     "version": "1.0.0",
     "githubUrl": "https://github.com/asterism0115/grub-house.git",
     "orientation": "portrait",
@@ -11,7 +11,7 @@
     "platforms": [
       "ios",
       "android"
-      ],
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -28,8 +28,8 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "buildNumber": "1.0.0",
       "infoPlist": {
-        "NSLocationAlwaysAndWhenInUseUsageDescription":"App uses your location permission to search merchants nearby you",
-        "NSLocationWhenInUseUsageDescription":"App uses your location permission to search merchants nearby you",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "App uses your location permission to search merchants nearby you",
+        "NSLocationWhenInUseUsageDescription": "App uses your location permission to search merchants nearby you",
         "NSLocationAlwaysUsageDescription": "App uses your location permission to search merchants nearby you",
         "NSPhotoLibraryUsageDescription": "App uses your library permission to get your picture for AVATAR",
         "NSContactsUsageDescription": "App uses your contact permission to invite your friend to Group House",
@@ -57,7 +57,7 @@
           "apiKey": "AIzaSyCCynf5qQzLMr2CLR0sWWLgsq6vT8ad4M0"
         }
       },
-      "permissions" : [
+      "permissions": [
         "CAMERA",
         "ACCESS_FINE_LOCATION",
         "MEDIA_LIBRARY",
@@ -74,6 +74,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "middle"
+    "description": ""
   }
 }
