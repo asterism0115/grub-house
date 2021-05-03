@@ -144,6 +144,13 @@ export default class nearbyRestorants extends Component {
         GET_LOCATION_OPTIONS,
       );
     }   
+    this.refs.mapView.animateToRegion(
+      {
+        latitude: this.state.orgLocation.lat,
+        longitude: this.state.orgLocation.lng,
+        latitudeDelta: 0.04022,
+        longitudeDelta: 0.00021,
+      }, 2000)
   };
   checkOpen = (merchant_id) => {
     GetOpenTime(merchant_id).then(res=>{
@@ -205,6 +212,13 @@ export default class nearbyRestorants extends Component {
       duration: 500,
     }).start();
     this.setState({ isChanging: true })
+    this.refs.mapView.animateToRegion(
+      {
+        latitude: this.state.orgLocation.lat,
+        longitude: this.state.orgLocation.lng,
+        latitudeDelta: 0.04022,
+        longitudeDelta: 0.00021,
+      }, 2000)
   }
 
   searchComplete = async () => {
@@ -646,6 +660,7 @@ export default class nearbyRestorants extends Component {
           <MapView
             ref="mapView"
             showsMyLocationButton
+            minZoomLevel={16}
             style={{ flex: 1, width: global.CONSTANT.WIDTH }}
             provider={PROVIDER_GOOGLE}
             region={{
@@ -712,7 +727,6 @@ export default class nearbyRestorants extends Component {
                   latitude: this.state.cLocation.lat,
                   longitude: this.state.cLocation.lng,
                 }}
-                style={{ animated: false }}
                 Component={TouchableOpacity}
                 anchor={{ x: 0.5, y: 0.5 }}
               >
@@ -725,7 +739,7 @@ export default class nearbyRestorants extends Component {
                 latitude: this.state.cLocation.lat,
                 longitude: this.state.cLocation.lng,
               }}
-              style={{ animated: true, zIndex: 99, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
+              style={{ /*animated: true,*/ zIndex: 99, flexDirection: "column", justifyContent: "center", alignItems: "center" }}
               Component={TouchableOpacity}
               anchor={{ x: 0.5, y: 0.9 }}
             >
@@ -1022,7 +1036,7 @@ const styles = StyleSheet.create({
   },
   search: {
     backgroundColor: "#FFF",
-    color: "white",
+    // color: "white",
     width: 150,
     marginBottom: 10,
     marginLeft: "auto",
