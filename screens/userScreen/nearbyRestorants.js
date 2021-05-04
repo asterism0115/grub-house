@@ -303,13 +303,66 @@ export default class nearbyRestorants extends Component {
             if(a.open_startus && !b.open_startus){
               return -1
             } else {
-              return 1
+              const days = [
+                "sunday",
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday",
+                "saturday",
+              ]
+              var d = new Date()
+              var cDay = d.getDay()
+              var a_opentime = a.stores_open_starts[days[cDay]]?a.stores_open_starts[days[cDay]]:"05:00"
+              var b_opentime = b.stores_open_starts[days[cDay]]?b.stores_open_starts[days[cDay]]:"05:00"
+              var a_hour=a_opentime.split(":");
+              var b_hour=b_opentime.split(":");
+              if((a.open_startus && b.open_startus) || (!a.open_startus && !b.open_startus)) {
+                if (parseInt(a_hour[0],10) <= parseInt(b_hour[0],10)) {
+                  return -1
+                }
+                else {
+                  return 1
+                }
+              }
+              else {
+                return 1
+              }
             }
           })
 
           rests.map(async (rest, index) => {
+            var next_day = ""
+            var next_time = ""
             if(rest.opening){
               console.log(rest.opening)
+            }
+            if(rest.open_startus !== true) {
+              const days = [
+                "sunday",
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday",
+                "saturday",
+              ]
+              var d = new Date()
+              var cDay = d.getDay()
+              if (rest.stores_open_day && rest.stores_open_day.length > 0) {
+                days.forEach((_day, i) => {
+                  if(i>cDay+1 && rest.stores_open_day.includes(_day)) {
+                    next_time = rest.stores_open_starts[_day]
+                    next_day = _day.charAt(0).toUpperCase() + _day.slice(1)
+                  }
+                })
+              }
+              else {
+                var _day = cDay<6 ? days[cDay+1] : ""
+                next_time = rest.stores_open_starts[next_day] ? rest.stores_open_starts[next_day] : "05:00"
+                next_day = _day.charAt(0).toUpperCase() + _day.slice(1)
+              }
             }
             data.push({
               id: rest.merchant_id,
@@ -323,6 +376,8 @@ export default class nearbyRestorants extends Component {
               open_time: this.getServeTime(rest.stores_open_day, rest.stores_open_starts, rest.stores_open_ends, "start"),
               // review: rest.ratings==null? "0":rest.ratings.toFixed(2),
               close_time: this.getServeTime(rest.stores_open_day, rest.stores_open_starts, rest.stores_open_ends, "end"),
+              next_open_day: next_day!==''?next_day:'Next Week',
+              next_open_time: next_time,
               distance: rest.distance,
               lat: rest.latitude ? rest.latitude : 0,
               lng: rest.lontitude ? rest.lontitude : 0,
@@ -818,38 +873,43 @@ export default class nearbyRestorants extends Component {
                       >
                         {
                           d.open_startus?null:<View style={{borderRadius: 5, position: 'absolute', top:0, zIndex: 100, backgroundColor: 'rgba(0, 0, 0, 0.4)', width: "100%", height: "100%", resizeMode: "cover", justifyContent: "center", alignItems: "center"}} >
-                            <Text style={{color: "white", width: "80%", fontSize: 20}}>This merchant is closed today{d.open_startus}</Text>
+                            <Text style={{color: "white", width: "80%", fontSize: 20}}>{d.name} are closed now, schedule for {d.next_open_day} {d.next_open_time}</Text>
                           </View>
                         }
                             
                         <Image source={{ uri: d.image }} style={styles.images} />
-                        <View style={styles.timeContainer}>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              justifyContent: "flex-start",
-                              backgroundColor: "rgba(0,0,0,0.3)",
-                              // marginLeft: 6
-                            }}
-                          >
-                            <View style={styles.greenContainer}>
-                              <Text style={styles.openText}> Open </Text>
+                        
+                        {
+                          d.open_startus ?
+                          <View style={styles.timeContainer}>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                justifyContent: "flex-start",
+                                backgroundColor: "rgba(0,0,0,0.3)",
+                                // marginLeft: 6
+                              }}
+                            >
+                              <View style={styles.greenContainer}>
+                                <Text style={styles.openText}> Open </Text>
+                              </View>
+                              <Text style={styles.timeText}> {d.open_time}</Text>
                             </View>
-                            <Text style={styles.timeText}> {d.open_time}</Text>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              justifyContent: "flex-start",
-                              backgroundColor: "rgba(0,0,0,0.3)",
-                            }}
-                          >
-                            <View style={styles.redContainer}>
-                              <Text style={styles.openText}> Close </Text>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                justifyContent: "flex-start",
+                                backgroundColor: "rgba(0,0,0,0.3)",
+                              }}
+                            >
+                              <View style={styles.redContainer}>
+                                <Text style={styles.openText}> Close </Text>
+                              </View>
+                              <Text style={styles.timeText}> {d.close_time} </Text>
                             </View>
-                            <Text style={styles.timeText}> {d.close_time} </Text>
                           </View>
-                        </View>
+                          :
+                          null }
                         <Text style={styles.missText}>{d.name}</Text>
                         <Text style={styles.addressText}>{d.fullAddress}</Text>
                         <View style={styles.amountContainer}>
