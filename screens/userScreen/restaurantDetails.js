@@ -314,7 +314,7 @@ export default class detailsScreen extends Component {
         >
           <FlatGrid
             itemDimension={global.CONSTANT.WIDTH / 3 - 30}
-            items={this.state.restaurant?.food_court}
+            items={this.state.restaurant.food_court}
             renderItem={({ item }) => (
               <View style={{position: "relative"}}
               >

@@ -136,7 +136,7 @@ export default class nearbyRestorants extends Component {
               mapLoading: true
             })
           }, 500)
-          console.log("position", position);
+          console.log("position: ", position);
         },
         (err) => {
           alert("Location permission is denied");
@@ -197,14 +197,29 @@ export default class nearbyRestorants extends Component {
   changeLocation = async () => {
     // to bottom animation
     const screenHeight = Math.round(Dimensions.get('window').height);
-    Animated.timing(this.state.scrollY, {
-      toValue: screenHeight,
-      duration: 500,
-    }).start();
-    Animated.timing(this.state.mapAnimatedHeight, {
-      toValue: screenHeight,
-      duration: 500,
-    }).start();
+   
+    if( Platform.OS === "ios" ) {
+      Animated.timing(this.state.scrollY, {
+        toValue: screenHeight,
+        duration: 500,
+      }).start();
+      Animated.timing(this.state.mapAnimatedHeight, {
+        toValue: screenHeight,
+        duration: 500,
+      }).start();
+    }
+    else {
+      Animated.timing(this.state.scrollY, {
+        toValue: screenHeight,
+        duration: 500,
+        useNativeDriver: true
+      }).start();
+      Animated.timing(this.state.mapAnimatedHeight, {
+        toValue: screenHeight,
+        duration: 500,
+        useNativeDriver: true
+      }).start();
+    }
     this.setState({ isChanging: true })
     this.refs.mapView.animateToRegion(
       {
@@ -217,14 +232,28 @@ export default class nearbyRestorants extends Component {
 
   searchComplete = async () => {
     // to top
-    Animated.timing(this.state.scrollY, {
-      toValue: 0,
-      duration: 500,
-    }).start();
-    Animated.timing(this.state.mapAnimatedHeight, {
-      toValue: 290,
-      duration: 500,
-    }).start();
+    if( Platform.OS === "ios" ) {
+      Animated.timing(this.state.scrollY, {
+        toValue: 0,
+        duration: 500,
+      }).start();
+      Animated.timing(this.state.mapAnimatedHeight, {
+        toValue: 290,
+        duration: 500,
+      }).start();
+    }
+    else {
+      Animated.timing(this.state.scrollY, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true
+      }).start();
+      Animated.timing(this.state.mapAnimatedHeight, {
+        toValue: 290,
+        duration: 500,
+        useNativeDriver: true
+      }).start();
+    }
     this.setState({
       isChanging: false
     })
@@ -233,7 +262,7 @@ export default class nearbyRestorants extends Component {
   searchArea = async () => {
     // get location from moved region of map view
     let location = this.refs.mapView.__lastRegion
-    console.log("currentRegion", location)
+    console.log("-- currentRegion: ", location)
     this.getRests({
       latitude: location.latitude,
       longitude: location.longitude
@@ -260,19 +289,23 @@ export default class nearbyRestorants extends Component {
           this.searchComplete()
         }, 3000)
       })
-      if(typeof address == "undefined"){
+      if(typeof address == "undefined" || address.length == 0){
         setTimeout(()=>{
           this.setState({loading: false })
           this.searchComplete()
         }, 3)
       }
-      this.setState({ cAddress: address[0].street })
+      else {
+        console.log("//--- address: ", address[0])
+        this.setState({ cAddress: address[0].street })
+      }
+
       let data = []
       let restsData = []
       getNearBy(location)
         .then(response => {
           var rests= response.details.data
-
+console.log("/-----  rests: ", response.details.data)
           rests.sort(function(a, b){
             if(a.open_startus && !b.open_startus){
               return -1
@@ -280,6 +313,7 @@ export default class nearbyRestorants extends Component {
               return 1
             }
           })
+console.log("sorted rests: ", rests)
 
           rests.map(async (rest, index) => {
             if(rest.opening){
@@ -304,13 +338,13 @@ export default class nearbyRestorants extends Component {
               slug: rest.restaurant_slug,
               delivery_charges: rest.delivery_charges,
               delivery_estimation: rest.delivery_estimation,
-              open_startus: rest.open_startus
+              open_startus: rest.opening //rest.open_startus
             })
           })
 
           this.setState({ nearbyList: data, nearbyRestList: data, loading: false })
 
-          console.log("nearby restaurants data", data)
+          console.log("nearby restaurants data: ", data)
           this.searchComplete()
         });
     setTimeout(()=>{
