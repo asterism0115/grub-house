@@ -212,22 +212,15 @@ export default class nearbyRestorants extends Component {
       Animated.timing(this.state.scrollY, {
         toValue: screenHeight,
         duration: 500,
-        useNativeDriver: true
+        useNativeDriver: false
       }).start();
       Animated.timing(this.state.mapAnimatedHeight, {
         toValue: screenHeight,
         duration: 500,
-        useNativeDriver: true
+        useNativeDriver: false
       }).start();
     }
     this.setState({ isChanging: true })
-    this.refs.mapView.animateToRegion(
-      {
-        latitude: this.state.orgLocation.lat,
-        longitude: this.state.orgLocation.lng,
-        latitudeDelta: 0.04022/13,
-        longitudeDelta: 0.00021/13,
-      }, 2000)
   }
 
   searchComplete = async () => {
@@ -246,12 +239,12 @@ export default class nearbyRestorants extends Component {
       Animated.timing(this.state.scrollY, {
         toValue: 0,
         duration: 500,
-        useNativeDriver: true
+        useNativeDriver: fasle
       }).start();
       Animated.timing(this.state.mapAnimatedHeight, {
         toValue: 290,
         duration: 500,
-        useNativeDriver: true
+        useNativeDriver: false
       }).start();
     }
     this.setState({
@@ -305,7 +298,7 @@ export default class nearbyRestorants extends Component {
       getNearBy(location)
         .then(response => {
           var rests= response.details.data
-console.log("/-----  rests: ", response.details.data)
+
           rests.sort(function(a, b){
             if(a.open_startus && !b.open_startus){
               return -1
@@ -313,7 +306,6 @@ console.log("/-----  rests: ", response.details.data)
               return 1
             }
           })
-console.log("sorted rests: ", rests)
 
           rests.map(async (rest, index) => {
             if(rest.opening){
@@ -338,7 +330,7 @@ console.log("sorted rests: ", rests)
               slug: rest.restaurant_slug,
               delivery_charges: rest.delivery_charges,
               delivery_estimation: rest.delivery_estimation,
-              open_startus: rest.opening //rest.open_startus
+              open_startus: rest.open_startus
             })
           })
 
@@ -420,8 +412,8 @@ console.log("sorted rests: ", rests)
       {
         latitude: this.state.orgLocation.lat,
         longitude: this.state.orgLocation.lng,
-        latitudeDelta: 0.4022/13,
-        longitudeDelta: 0.0021/13,
+        latitudeDelta: 0.4022/17,
+        longitudeDelta: 0.0021/17,
       }, 2000)
     setTimeout(() => {
       this.setState({
@@ -693,8 +685,8 @@ console.log("sorted rests: ", rests)
             region={{
               latitude: this.state.cLocation.lat,
               longitude: this.state.cLocation.lng,
-              latitudeDelta: 0.3022/13,
-              longitudeDelta: 0.0021/13,
+              latitudeDelta: 0.3022/17,
+              longitudeDelta: 0.0021/17,
             }}
           >
             {this.state.nearbyRestList.length > 0 ? this.state.nearbyList.map((rest, index) => (
