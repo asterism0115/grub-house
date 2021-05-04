@@ -319,11 +319,16 @@ export default class nearbyRestorants extends Component {
               var a_hour=a_opentime.split(":");
               var b_hour=b_opentime.split(":");
               if((a.open_startus && b.open_startus) || (!a.open_startus && !b.open_startus)) {
-                if (parseInt(a_hour[0],10) <= parseInt(b_hour[0],10)) {
+                if (parseInt(a_hour[0],10) < parseInt(b_hour[0],10)) {
                   return -1
                 }
                 else {
-                  return 1
+                  if ((parseInt(a_hour[0],10) == parseInt(b_hour[0],10)) && (parseInt(a_hour[1],10) < parseInt(b_hour[1],10))) {
+                    return -1
+                  }
+                  else {
+                    return 1
+                  }
                 }
               }
               else {
