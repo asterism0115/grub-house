@@ -412,8 +412,8 @@ export default class nearbyRestorants extends Component {
       {
         latitude: this.state.orgLocation.lat,
         longitude: this.state.orgLocation.lng,
-        latitudeDelta: 0.4022/17,
-        longitudeDelta: 0.0021/17,
+        latitudeDelta: 0.4022/20,
+        longitudeDelta: 0.0021/20,
       }, 2000)
     setTimeout(() => {
       this.setState({
@@ -685,8 +685,8 @@ export default class nearbyRestorants extends Component {
             region={{
               latitude: this.state.cLocation.lat,
               longitude: this.state.cLocation.lng,
-              latitudeDelta: 0.3022/17,
-              longitudeDelta: 0.0021/17,
+              latitudeDelta: 0.3022/20,
+              longitudeDelta: 0.0021/20,
             }}
           >
             {this.state.nearbyRestList.length > 0 ? this.state.nearbyList.map((rest, index) => (
