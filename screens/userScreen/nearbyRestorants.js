@@ -289,7 +289,6 @@ export default class nearbyRestorants extends Component {
         }, 3)
       }
       else {
-        console.log("//--- address: ", address[0])
         this.setState({ cAddress: address[0].street })
       }
 
@@ -318,12 +317,62 @@ export default class nearbyRestorants extends Component {
               var b_opentime = b.stores_open_starts[days[cDay]]?b.stores_open_starts[days[cDay]]:"05:00"
               var a_hour=a_opentime.split(":");
               var b_hour=b_opentime.split(":");
-              if((a.open_startus && b.open_startus) || (!a.open_startus && !b.open_startus)) {
+              if(a.open_startus && b.open_startus) {
                 if (parseInt(a_hour[0],10) < parseInt(b_hour[0],10)) {
                   return -1
                 }
                 else {
                   if ((parseInt(a_hour[0],10) == parseInt(b_hour[0],10)) && (parseInt(a_hour[1],10) < parseInt(b_hour[1],10))) {
+                    return -1
+                  }
+                  else {
+                    return 1
+                  }
+                }
+              }
+              else if(!a.open_startus && !b.open_startus) {
+                var a_next_day = 7
+                var a_next_time = ''
+                var b_next_day = 7
+                var b_next_time = ''
+                if (a.stores_open_day && a.stores_open_day.length > 0) {
+                  days.forEach((_day, i) => {
+                    if(i>cDay+1 && a.stores_open_day.includes(_day)) {
+                      a_next_time = a.stores_open_starts[_day]
+                      a_next_day = i
+                    }
+                  })
+                }  
+                if (b.stores_open_day && b.stores_open_day.length > 0) {
+                  days.forEach((_day, i) => {
+                    if(i>cDay+1 && b.stores_open_day.includes(_day)) {
+                      b_next_time = b.stores_open_starts[_day]
+                      b_next_day = i
+                    }
+                  })
+                }
+                if (a_next_day == b_next_day) {
+                  if (a_next_day < 7) {
+                    a_hour=a_next_time.split(":");
+                    b_hour=b_next_time.split(":");
+                    if (parseInt(a_hour[0],10) < parseInt(b_hour[0],10)) {
+                      return -1
+                    }
+                    else {
+                      if ((parseInt(a_hour[0],10) == parseInt(b_hour[0],10)) && (parseInt(a_hour[1],10) < parseInt(b_hour[1],10))) {
+                        return -1
+                      }
+                      else {
+                        return 1
+                      }
+                    }
+                  }
+                  else {
+                    return -1
+                  }
+                }
+                else {
+                  if (a_next_day < b_next_day) {
                     return -1
                   }
                   else {
@@ -337,7 +386,7 @@ export default class nearbyRestorants extends Component {
             }
           })
 
-          rests.map(async (rest, index) => {
+          rests.map( (rest, index) => {
             var next_day = ""
             var next_time = ""
             if(rest.opening){
@@ -381,7 +430,7 @@ export default class nearbyRestorants extends Component {
               open_time: this.getServeTime(rest.stores_open_day, rest.stores_open_starts, rest.stores_open_ends, "start"),
               // review: rest.ratings==null? "0":rest.ratings.toFixed(2),
               close_time: this.getServeTime(rest.stores_open_day, rest.stores_open_starts, rest.stores_open_ends, "end"),
-              next_open_day: next_day!==''?next_day:'Next Week',
+              next_open_day: next_day!==''?next_day:'',
               next_open_time: next_time,
               distance: rest.distance,
               lat: rest.latitude ? rest.latitude : 0,
@@ -393,7 +442,6 @@ export default class nearbyRestorants extends Component {
               open_startus: rest.open_startus
             })
           })
-
           this.setState({ nearbyList: data, nearbyRestList: data, loading: false })
 
           console.log("nearby restaurants data: ", data)
@@ -472,8 +520,8 @@ export default class nearbyRestorants extends Component {
       {
         latitude: this.state.orgLocation.lat,
         longitude: this.state.orgLocation.lng,
-        latitudeDelta: 0.4022/20,
-        longitudeDelta: 0.0021/20,
+        latitudeDelta: 0.4022/30,
+        longitudeDelta: 0.0021/30,
       }, 2000)
     setTimeout(() => {
       this.setState({
@@ -745,8 +793,8 @@ export default class nearbyRestorants extends Component {
             region={{
               latitude: this.state.cLocation.lat,
               longitude: this.state.cLocation.lng,
-              latitudeDelta: 0.3022/20,
-              longitudeDelta: 0.0021/20,
+              latitudeDelta: 0.3022/30,
+              longitudeDelta: 0.0021/30,
             }}
           >
             {this.state.nearbyRestList.length > 0 ? this.state.nearbyList.map((rest, index) => (
@@ -878,7 +926,10 @@ export default class nearbyRestorants extends Component {
                       >
                         {
                           d.open_startus?null:<View style={{borderRadius: 5, position: 'absolute', top:0, zIndex: 100, backgroundColor: 'rgba(0, 0, 0, 0.4)', width: "100%", height: "100%", resizeMode: "cover", justifyContent: "center", alignItems: "center"}} >
-                            <Text style={{color: "white", width: "80%", fontSize: 20}}>{d.name} are closed now, schedule for {d.next_open_day} {d.next_open_time}</Text>
+                            {
+                              d.next_open_day!==''?<Text style={{color: "white", width: "80%", fontSize: 20}}>{d.name} are closed now, schedule for {d.next_open_day} {d.next_open_time}</Text>
+                              :<Text style={{color: "white", width: "80%", fontSize: 20, alignItems: "center"}}>Merchant is closed</Text>
+                            }
                           </View>
                         }
                             
